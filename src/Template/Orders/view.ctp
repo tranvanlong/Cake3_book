@@ -4,7 +4,7 @@
   * @var \App\Model\Entity\Order $order
   */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('Edit Order'), ['action' => 'edit', $order->id]) ?> </li>
@@ -51,4 +51,4 @@
         <h4><?= __('Payment Info') ?></h4>
         <?= $this->Text->autoParagraph(h($order->payment_info)); ?>
     </div>
-</div>
+</div> 

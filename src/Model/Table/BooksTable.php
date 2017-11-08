@@ -110,6 +110,10 @@ class BooksTable extends Table
             ->boolean('published')
             ->allowEmpty('published');
 
+        $validator
+            ->requirePresence('keyword')
+            ->notEmpty('keyword','Vui lòng nhập từ khóa tìm kiếm.');
+
         return $validator;
     }
 
@@ -126,6 +130,5 @@ class BooksTable extends Table
 
         return $rules;
     }
-
 
 }

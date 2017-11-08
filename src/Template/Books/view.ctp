@@ -4,139 +4,97 @@
   * @var \App\Model\Entity\Book $book
   */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Book'), ['action' => 'edit', $book->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Book'), ['action' => 'delete', $book->id], ['confirm' => __('Are you sure you want to delete # {0}?', $book->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Books'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Book'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Categories'), ['controller' => 'Categories', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Category'), ['controller' => 'Categories', 'action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Comments'), ['controller' => 'Comments', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Comment'), ['controller' => 'Comments', 'action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Writers'), ['controller' => 'Writers', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Writer'), ['controller' => 'Writers', 'action' => 'add']) ?> </li>
-    </ul>
-</nav>
 <div class="books view large-9 medium-8 columns content">
-    <h3><?= h($book->title) ?></h3>
-    <table class="vertical-table">
-        <tr>
-            <th scope="row"><?= __('Category') ?></th>
-            <td><?= $book->has('category') ? $this->Html->link($book->category->name, ['controller' => 'Categories', 'action' => 'view', $book->category->id]) : '' ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Title') ?></th>
-            <td><?= h($book->title) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Slug') ?></th>
-            <td><?= h($book->slug) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Image') ?></th>
-            <td><?= h($book->image) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Publisher') ?></th>
-            <td><?= h($book->publisher) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Link Download') ?></th>
-            <td><?= h($book->link_download) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Id') ?></th>
-            <td><?= $this->Number->format($book->id) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Price') ?></th>
-            <td><?= $this->Number->format($book->price) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Sale Price') ?></th>
-            <td><?= $this->Number->format($book->sale_price) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Publish Date') ?></th>
-            <td><?= h($book->publish_date) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Created') ?></th>
-            <td><?= h($book->created) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Modified') ?></th>
-            <td><?= h($book->modified) ?></td>
-        </tr>
-        <tr>
-            <th scope="row"><?= __('Published') ?></th>
-            <td><?= $book->published ? __('Yes') : __('No'); ?></td>
-        </tr>
-    </table>
-    <div class="row">
-        <h4><?= __('Info') ?></h4>
-        <?= $this->Text->autoParagraph(h($book->info)); ?>
+    <!-- update 10/10 -->
+    <div class="panel panel-default" style="width: 872px;">
+        <div class="related">
+            <h4 class="panel-heading"><i class="fa fa-book"></i>&nbsp;&nbsp;<?= h($book->title) ?></h4>
+            <!-- div image -->
+            <div class="content-book">   
+                <div class="detail">
+                    <div class="image-book">
+                        <?php echo $this->Html->image($book['image'],['class'=>'img img-responsive']); ?>
+                    </div></br>
+                    <div class="detail-child">
+                        <div>
+                            <h5><?= h($book->title) ?></td></strong></h5>
+                        </div>
+                        <div>
+                            <strong>Publisher: </strong><?= h($book->publisher) ?></br>
+                        </div>
+                        <div>
+                            <strong>Sale Price: </strong><?= $this->Number->format($book->sale_price,['places'=> 0,'after'=>' VNĐ']) ?></br>
+                        </div>
+                        <div>
+                            <strong>Comments: </strong><?= $this->Number->format($book->comment_count,['places'=>0,'before'=>'(','after'=>') Comments'])?></br>
+                        </div>
+                        <!-- Thêm giỏ hàng -->
+                        <?php echo $this->Form->postLink('Thêm vào <i class="fa fa-shopping-cart"></i>','/books/add_to_cart/'.$book['id'],['class'=>'btn btn-primary','escape'=>false]); 
+                        ?>
+                    </div>
+                </div>
+                <div>
+                    <strong>Info: </strong></br>
+                    <?= $this->Text->autoParagraph(h($book->info)); ?>
+                </div>
+            </div>
+            <!-- Hiển thị tác giả -->
+            <div class="content-book">
+                <legend><i class="fa fa-user"></i>&nbsp;&nbsp;<?= __('Tác giả') ?></legend>
+                <?php if (!empty($book->writers)): ?>
+                    <?php foreach ($book['writers'] as $writer) {
+                        echo $this->Html->link($writer['name'],'/tac-gia/'.$writer['slug']);echo "<br>";
+                    }  ?>
+                <?php endif; ?>
+            </br>
+            </div>
+            <!-- Hiển thị comments -->
+            <div class="content-book">
+                <p><legend ><i class="fa fa-comments-o"></i>&nbsp;&nbsp;<?= __('Bình luận: ') ?></legend> Có tất cả <?php echo $book['comment_count'] ?> bình luận</p>
+                <?php if (!empty($comments)){
+                        foreach ($comments as $comment) {
+                            echo $comment['user']['firstname']." ".$comment['user']['lastname']."  đã gửi: ";
+                            echo $comment['content']."<br>";
+                        }
+                     } else{
+                            echo "Chưa có nhận xét cho quyển sách này.";
+                     }
+                ?>        
+            </div><br>
+            <!-- Gởi comments -->
+            <div class="comments form" style="margin-left:20px;">
+                <?php if (isset($error)): ?>
+                    <?php foreach ($errors as $error ): ?>
+                        <?php echo $error[0]; ?>
+                    <?php endforeach ?>
+                <?php endif ?>
+                
+                <?php echo $this->Form->create('Comment',['url'=>['controller'=>'Comments','action'=>'add'],'novalidator'=>true]); ?>
+                <fieldset>
+                    <legend><i class="fa fa-comment-o"></i>&nbsp;&nbsp;<?php echo __('Thêm bình luận'); ?></legend>
+                    <?php if (!empty($user_info)): ?>
+                        <?php
+                        echo $this->Form->input('user_id',['type'=>'hidden','value'=>$user_info['id']]);
+                        echo $this->Form->input('book_id',['type'=>'hidden','value'=>$book['id']]);
+                        echo $this->Form->input('content',['type'=>'textarea','label'=>'']);
+                        ?>
+                        <?php echo $this->Form->input('Gởi nhận xét',['type'=>'submit','class'=>'btn btn-info']); ?><?php echo $this->Form->end(); ?>
+                    <?php else: ?>
+                            Bạn phải <?php echo $this->Html->link('đăng nhập','/login'); ?> trước khi gởi nhận xét
+                    <?php endif ?>                    
+                </fieldset>
+            </div>
+        </div>
     </div>
-    <div class="related">
-        <h4><?= __('Related Comments') ?></h4>
-        <?php if (!empty($comments)): ?>
-            <?php foreach ($comments as $comment): ?>
-                <?php echo $comment['User']['username']; ?> đã gửi:
-               " <?php echo $comment['Comments']['content']; ?>"
-            <?php endforeach; ?>
-        </table>
-        <?php endif; ?>
-    </div>
-    <div class="related">
-        <h4><?= __('Related Writers') ?></h4>
-        <?php if (!empty($book->writers)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th scope="col"><?= __('Id') ?></th>
-                <th scope="col"><?= __('Name') ?></th>
-                <th scope="col"><?= __('Slug') ?></th>
-                <th scope="col"><?= __('Biography') ?></th>
-                <th scope="col"><?= __('Created') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-            <?php foreach ($book->writers as $writers): ?>
-            <tr>
-                <td><?= h($writers->id) ?></td>
-                <td><?= h($writers->name) ?></td>
-                <td><?= h($writers->slug) ?></td>
-                <td><?= h($writers->biography) ?></td>
-                <td><?= h($writers->created) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'Writers', 'action' => 'view', $writers->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'Writers', 'action' => 'edit', $writers->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'Writers', 'action' => 'delete', $writers->id], ['confirm' => __('Are you sure you want to delete # {0}?', $writers->id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-        <?php endif; ?>
-        <h3>Sách liên quan</h3>
-        <?php echo $this->element('books',['books'=>$related_books]) ?>
-    </div>
-</div>
+    <!-- end -->
 
-<!--comments-->
-<div class="comments form">
-    <?php if (isset($errors)):?> 
-            <?php foreach ($errors as $error):?>
-            <?php echo $error[0]; ?>
-        <?php endforeach ?>
-    <?php endif ?>
-    <?php echo $this->Form->create('Comments',['action'=>'add','novalidate'=>true]); ?>
-    <fieldset>
-        <legend><?php echo __('Add Comments');?></legend>
-        <?php
-            echo $this->Form->input('user_id',['required'=>false,'label'=>'','type'=>'text','values'=>1,'hidden'=>true]);
-            echo $this->Form->input('book_id',['required'=>false,'type'=>'text','values'=>$book['Book']['id'],'hidden'=>true]);
-            echo $this->Form->input('content');
-        ?>
-    </fieldset>
-    <?php echo $this->Form->end(__('Submit')); ?>
-</div>
+    <!-- Hiển thị sách liên quan -->
+    <!-- update 10/10 -->
+    <div class="panel panel-default" style="width: 872px;">
+        <div class="related">
+            <h4 class="panel-heading"><i class="fa fa-address-book"></i>&nbsp;&nbsp;Sách cùng chuyên mục</h4>
+            <?php if (!empty($related_books)): ?>
+                <?php echo $this->element('books',['books'=>$related_books]); ?>
+            <?php endif; ?>
+        </div>
+    </div>

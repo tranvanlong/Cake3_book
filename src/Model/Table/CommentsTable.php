@@ -41,13 +41,18 @@ class CommentsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('CounterCache', [
+            'Books' => ['comment_count']
+        ]);
+
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Books', [
             'foreignKey' => 'book_id',
-            'joinType' => 'INNER'
+            'joinType' => 'INNER',
+            'comment_count' => ['counterCache' => true]
         ]);
     }
 
@@ -65,7 +70,13 @@ class CommentsTable extends Table
 
         $validator
             ->requirePresence('content', 'create')
-            ->notEmpty('content');
+            ->notEmpty('content','Nội dung không được để trống')
+            ->add('content',[
+                'length' => [
+                    'rule' => ['minLength', 8],
+                    'message' => 'Nội dung nhận xét không được nhỏ hơn 8 kí tự'
+                    ]
+                ]);
 
         return $validator;
     }
@@ -84,8 +95,4 @@ class CommentsTable extends Table
 
         return $rules;
     }
-    public $validate = ['user_id'=>['numeric'=>['rule'=>['numeric']]],
-                        'book_id'=>['numeric'=>['rule'=>['numeric']]],
-                        'content'=>['notempty'=>['rule'=>['notempty'],'message'=>'Không được để trống phần nhận xét'],
-                                      'minlength'=>['rule'=>['minlength',4],'message'=>'Nội dung nhận xét phải >=4 ký tự']]];
 }

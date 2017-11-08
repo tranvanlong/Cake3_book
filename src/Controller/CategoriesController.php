@@ -27,6 +27,20 @@ class CategoriesController extends AppController
     }
 
     /**
+     * menu method
+     *
+     * @return void
+     */
+    public function menu() {
+        if($this->request->is('requested')){
+            $categories = $this->Categories->find('all',[
+            'order' => ['name'=>'asc']
+            ]);
+            return $categories;
+        }       
+    }
+
+    /**
      * View method
      *
      * @param string|null $id Category id.
@@ -48,7 +62,7 @@ class CategoriesController extends AppController
         $this->paginate = [
             'fields' => ['id','title','image','sale_price','slug'],
             'order' => ['created' =>'desc'],
-            'limit' => 3,
+            'limit' => 9,
             'conditions' => ['published'=>1,'Categories.slug'=>$slug],
             'contain' => ['Writers','Categories']
             ];

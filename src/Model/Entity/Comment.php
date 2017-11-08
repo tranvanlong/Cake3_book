@@ -17,7 +17,7 @@ use Cake\ORM\Entity;
  */
 class Comment extends Entity
 {
-    public $actsAs = array('containable' );
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -31,4 +31,5 @@ class Comment extends Entity
         '*' => true,
         'id' => false
     ];
+    
 }

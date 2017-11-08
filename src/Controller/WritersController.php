@@ -53,7 +53,7 @@ class WritersController extends AppController
         $this->paginate = [
             'fields' => ['id','title','image','sale_price','slug'],
             'order' => ['created' =>'desc'],
-            'limit' => 3, 
+            'limit' => 9, 
             'contain' => ['Writers'],
             'join' => [
                 [

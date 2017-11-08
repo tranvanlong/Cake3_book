@@ -26,6 +26,8 @@ use Cake\Validation\Validator;
 class UsersTable extends Table
 {
 
+    public $virtualFields = ['fullname' => 'concat(Users.lastname, " ", Users.firstname)'];
+
     /**
      * Initialize method
      *
@@ -72,8 +74,16 @@ class UsersTable extends Table
 
         $validator
             ->requirePresence('password', 'create')
-            ->notEmpty('password');
-
+            ->notEmpty('password','Mật khẩu không được để trống')
+            ->add('password', [
+                    'length' => [
+                        'rule' => ['minLength', 6],
+                        'message' => 'Mật khẩu phải có độ dài tối thiểu là 6 ký tự',
+                     ]
+                ]);
+        $validator
+            ->requirePresence('confirm_pasword', 'create')
+            ->notEmpty('confirm_pasword','Xác nhận mật khẩu không được để trống');   
         $validator
             ->email('email')
             ->requirePresence('email', 'create')

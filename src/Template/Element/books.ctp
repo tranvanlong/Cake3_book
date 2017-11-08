@@ -1,18 +1,26 @@
-<div class="col-sm-12">
-	<div class="product-image-wrapper">
-	<?php foreach($books as $book): ?>
-
-		<div class="single-products col-sm-4">
-			<div class="productinfo text-center">
-					<?php echo $this->Html->image($book['image'],array('class'=>'img img-responsive', 'style'=>'width:220px;height:220px;')); ?>
-					<h4><?php echo $this->Html->link($book['title'],'/'.$book['slug']); ?></h4>
-					<?php echo 'Tác giả: ';
-					foreach ($book['writers'] as $writer) {
-						echo $this->Html->link($writer['name'],'/tac-gia/'.$writer['slug']);
-					}  ?><br>					
-					Giá bán: <?php echo $this->Number->format($book['sale_price'],['places'=> 0,'after'=>' VNĐ']); ?><br>			
+<div class="thumbnails">
+<?php foreach($books as $book): ?>
+<li class="span3">
+	<div class="thumbnail">		
+		<?php echo $this->Html->image($book['image'],['class'=>'img img-responsive', 'style'=>'width:200px;height:200px;']); ?>
+		<div class="caption">
+			<div class="latest-product-name">
+				<h4><span><?php echo $this->Html->link($book['title'],'/'.$book['slug']); ?></span></h4>
 			</div>
+			<div class="writer">
+				<h5><?php
+				foreach ($book['writers'] as $writer) {
+					echo $this->Html->link($writer['name'],'/tac-gia/'.$writer['slug'])."&nbsp;&nbsp;";
+				}  ?></h5>				
+			</div>
+			<h5><span>Giá: <?php echo $this->Number->format($book['sale_price'],['places'=> 0,'after'=>'VNĐ']); ?></h5>
+			<!-- Thêm giỏ hàng -->
+             <?php echo $this->Form->postLink('Thêm vào <i class="fa fa-shopping-cart"></i>','/books/add_to_cart/'.$book['id'],['class'=>'btn btn-primary','escape'=>false]); 
+             ?>
 		</div>
-		<?php endforeach; ?>
+	
 	</div>
+	
+</li>
+<?php endforeach; ?>
 </div>

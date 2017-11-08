@@ -1,0 +1,1 @@
+ALTER TABLE `books` ADD `comment_count` INT NULL DEFAULT '0' AFTER `link_download`;

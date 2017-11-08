@@ -1,4 +1,4 @@
-<?php
+ <?php
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -12,6 +12,17 @@ use App\Controller\AppController;
  */
 class CommentsController extends AppController
 {
+    /*public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter();
+        $this->Auth->allow(['add']);
+    }*/
+
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter();
+        $this->Auth->allow(['add']);
+    }
 
     /**
      * Index method
@@ -55,27 +66,26 @@ class CommentsController extends AppController
     {
         $comment = $this->Comments->newEntity();
         if ($this->request->is('post')) {
-            $this->Comments->set($this->request->data);
-           if($this->Comments->validate()){
             $comment = $this->Comments->patchEntity($comment, $this->request->getData());
-            if ($this->Comments->save($comment)) {
-                $this->Flash->success(__('The comment has been saved.'));
-
-                // return $this->redirect(['action' => 'index']);
-                
+            if($this->Comments->validator()){
+                $user = $this->Auth->user();
+                $this->request->data['Comments']['user_id'] = $user['id'];
+                if ($this->Comments->save($comment)) {
+                    $this->Flash->success(__('Đã gởi nhận xét.'));               
+                }else{
+                    $this->Flash->error(__('Không gởi được nhận xét.'));
+                }            
             }else{
-            $this->Flash->error(__('The comment could not be saved. Please, try again.'));
+                $comment_errors = $this->Comments->errors;
+                $session = $this->request->session();
+                $session->write('comment_errors',$comment_errors);
             }
-        }else{
-            $comment_error=$this->Comments->validationErrors;
-            $this->Session->write('comment_error',$comment_error);
+            $this->redirect($this->referer());          
         }
-        $this->redirect($this->referer());
-        }
-        $users = $this->Comments->Users->find('list', ['limit' => 200]);
+        /*$users = $this->Comments->Users->find('list', ['limit' => 200]);
         $books = $this->Comments->Books->find('list', ['limit' => 200]);
         $this->set(compact('comment', 'users', 'books'));
-        $this->set('_serialize', ['comment']);
+        $this->set('_serialize', ['comment']);*/
     }
 
     /**

@@ -27,7 +27,7 @@ use Cake\Event\Event;
  */
 class AppController extends Controller
 {
-
+   /* public $components = ['Tool'];*/
     /**
      * Initialization hook method.
      *
@@ -43,6 +43,16 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+        $this->loadComponent('Auth', [
+            'loginAction' => '/login',
+            'authError' => 'Bạn cần phải đăng nhập để tiếp tục',
+            'flash' => [
+                'element' => 'default',
+                'key' => 'auth',
+                'params' => ['class'=>'alert alert-danger']
+            ],
+            'loginRedirect' => '/'
+        ]);
 
         /*
          * Enable the following components for recommended CakePHP security settings.
@@ -68,5 +78,48 @@ class AppController extends Controller
         ) {
             $this->set('_serialize', true);
         }
+
+        
     }
+
+    public function beforeFilter(Event $event)
+    {
+        $this->Auth->allow(['index', 'latest', 'view', 'getKeyword', 'search', 'menu','viewCart','changePassword']);
+        $this->set('user_info', $this->get_user());
+    }
+
+    public function get_user()
+    {
+        return $this->Auth->user();
+    }
+
+    public function getCoupon($code){
+        $coupons = $this->Coupons->find('all',['conditions'=>['Coupons.code'=>$code]])->first();
+        return $coupons;
+    }
+
+    /* tính tổng giá trị giỏ hàng*/
+    public function Sum_Price($cart){
+        $total=0;
+        foreach ($cart as $book) { 
+                # code...
+            $total += $book['quantity']*$book['sale_price'];
+        }
+        return $total;
+    }
+
+    /* kiểm tra coupon còn hạn hay không*/
+    public function between($date, $start, $end, $timezone = 'Asia/Ho_Chi_Minh'){
+            date_default_timezone_set($timezone);
+            $date = strtotime($date);
+            $start = strtotime($start);
+            $end = strtotime($end);
+            if ($date >= $start && $date <=$end) {
+                # code...
+                return true;
+            }else{
+                return false;
+            }
+        }
 }
+?>
